@@ -27,8 +27,10 @@ class SistemaGestionMedica:
         if not isinstance(paciente, Paciente):
             raise TypeError("El objeto debe ser un paciente.")
 
-        if any(p.idPaciente == paciente.idPaciente
-               for p in self.__pacientes):
+        if any(
+            p.idPaciente == paciente.idPaciente
+            for p in self.__pacientes
+        ):
             raise ValueError("El paciente ya está registrado.")
 
         paciente.registrarDatos()
@@ -38,8 +40,19 @@ class SistemaGestionMedica:
         if not isinstance(cita, CitaMedica):
             raise TypeError("El objeto debe ser una cita médica.")
 
-        if any(c.idCita == cita.idCita for c in self.__citas):
+        if any(
+            c.idCita == cita.idCita
+            for c in self.__citas
+        ):
             raise ValueError("La cita ya está registrada.")
+
+        if not any(
+            p.idPaciente == cita.paciente.idPaciente
+            for p in self.__pacientes
+        ):
+            raise ValueError(
+                "El paciente no está registrado en el sistema."
+            )
 
         cita.programar()
         self.__citas.append(cita)

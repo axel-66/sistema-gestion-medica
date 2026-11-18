@@ -16,7 +16,6 @@ class UsuarioPrueba(Usuario):
 class TestSistemaGestionMedica(unittest.TestCase):
 
     def setUp(self):
-        # Reiniciar los datos del Singleton para cada prueba
         sistema = SistemaGestionMedica.obtenerInstancia()
         sistema._SistemaGestionMedica__pacientes.clear()
         sistema._SistemaGestionMedica__citas.clear()
@@ -41,7 +40,7 @@ class TestSistemaGestionMedica(unittest.TestCase):
             self.medico
         )
 
-    # PRUEBAS ANTERIORES
+    # PRUEBAS DE FUNCIONAMIENTO
 
     def test_registrar_paciente(self):
         self.sistema.registrarPaciente(self.paciente)
@@ -69,6 +68,8 @@ class TestSistemaGestionMedica(unittest.TestCase):
         self.assertEqual(len(reporte), 1)
         self.assertEqual(reporte[0]["nombre"], "Juan Pérez")
 
+    # PRUEBAS DE AUTENTICACIÓN
+
     def test_verificar_contrasena_correcta(self):
         usuario = UsuarioPrueba(
             1, "Axel", "axel@essalud.com", "ClaveSegura123"
@@ -87,7 +88,7 @@ class TestSistemaGestionMedica(unittest.TestCase):
             usuario.iniciarSesion("ClaveIncorrecta")
         )
 
-    # NUEVAS PRUEBAS DE VALIDACIÓN
+    # PRUEBAS DE VALIDACIÓN
 
     def test_rechazar_paciente_con_dni_invalido(self):
         paciente = Paciente(
@@ -130,6 +131,12 @@ class TestSistemaGestionMedica(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             cita.cambiarEstado("Estado incorrecto")
+
+    def test_rechazar_cita_de_paciente_no_registrado(self):
+        cita = self.crear_cita()
+
+        with self.assertRaises(ValueError):
+            self.sistema.agregarCita(cita)
 
 
 if __name__ == "__main__":
