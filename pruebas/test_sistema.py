@@ -1,14 +1,17 @@
-
 import unittest
 from datetime import datetime
 
+from modelos.usuario import Usuario
 from modelos.paciente import Paciente
 from modelos.medico import Medico
 from modelos.cita_medica import CitaMedica
 from servicios.sistema_gestion_medica import SistemaGestionMedica
 
+class UsuarioPrueba(Usuario):
+    pass
 
 class TestSistemaGestionMedica(unittest.TestCase):
+    
 
     def setUp(self):
         # Reiniciar los datos del Singleton para cada prueba
@@ -58,3 +61,17 @@ class TestSistemaGestionMedica(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+    
+    def test_verificar_contrasena_correcta(self):
+        usuario = UsuarioPrueba(
+            1, "Axel", "axel@essalud.com", "ClaveSegura123"
+        )
+
+        self.assertTrue(usuario.iniciarSesion("ClaveSegura123"))
+
+    def test_rechazar_contrasena_incorrecta(self):
+        usuario = UsuarioPrueba(
+            2, "Carlos", "carlos@essalud.com", "ClaveSegura123"
+        )
+
+        self.assertFalse(usuario.iniciarSesion("ClaveIncorrecta"))
