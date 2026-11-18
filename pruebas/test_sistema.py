@@ -1,3 +1,4 @@
+
 import unittest
 from datetime import datetime
 
@@ -7,11 +8,12 @@ from modelos.medico import Medico
 from modelos.cita_medica import CitaMedica
 from servicios.sistema_gestion_medica import SistemaGestionMedica
 
+
 class UsuarioPrueba(Usuario):
     pass
 
+
 class TestSistemaGestionMedica(unittest.TestCase):
-    
 
     def setUp(self):
         # Reiniciar los datos del Singleton para cada prueba
@@ -33,7 +35,9 @@ class TestSistemaGestionMedica(unittest.TestCase):
         self.sistema.registrarPaciente(self.paciente)
 
         self.assertEqual(len(self.sistema.pacientes), 1)
-        self.assertEqual(self.sistema.pacientes[0].nombre, "Juan Pérez")
+        self.assertEqual(
+            self.sistema.pacientes[0].nombre, "Juan Pérez"
+        )
 
     def test_registrar_cita(self):
         self.sistema.registrarPaciente(self.paciente)
@@ -48,7 +52,9 @@ class TestSistemaGestionMedica(unittest.TestCase):
 
         self.assertEqual(len(self.sistema.citas), 1)
         self.assertEqual(cita.estado, "Programada")
-        self.assertEqual(len(self.paciente.consultarCitas()), 1)
+        self.assertEqual(
+            len(self.paciente.consultarCitas()), 1
+        )
 
     def test_generar_reporte_pacientes(self):
         self.sistema.registrarPaciente(self.paciente)
@@ -58,20 +64,24 @@ class TestSistemaGestionMedica(unittest.TestCase):
         self.assertEqual(len(reporte), 1)
         self.assertEqual(reporte[0]["nombre"], "Juan Pérez")
 
-
-if __name__ == "__main__":
-    unittest.main()
-    
     def test_verificar_contrasena_correcta(self):
         usuario = UsuarioPrueba(
             1, "Axel", "axel@essalud.com", "ClaveSegura123"
         )
 
-        self.assertTrue(usuario.iniciarSesion("ClaveSegura123"))
+        self.assertTrue(
+            usuario.iniciarSesion("ClaveSegura123")
+        )
 
     def test_rechazar_contrasena_incorrecta(self):
         usuario = UsuarioPrueba(
             2, "Carlos", "carlos@essalud.com", "ClaveSegura123"
         )
 
-        self.assertFalse(usuario.iniciarSesion("ClaveIncorrecta"))
+        self.assertFalse(
+            usuario.iniciarSesion("ClaveIncorrecta")
+        )
+
+
+if __name__ == "__main__":
+    unittest.main()
