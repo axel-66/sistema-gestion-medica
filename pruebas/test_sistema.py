@@ -31,6 +31,18 @@ class TestSistemaGestionMedica(unittest.TestCase):
             "ClaveMedico123", "Medicina General", "CMP001"
         )
 
+    def crear_cita(self, id_cita=1, especialidad="Medicina General"):
+        return CitaMedica(
+            id_cita,
+            datetime(2026, 12, 10, 9, 0),
+            especialidad,
+            "Pendiente",
+            self.paciente,
+            self.medico
+        )
+
+    # PRUEBAS ANTERIORES
+
     def test_registrar_paciente(self):
         self.sistema.registrarPaciente(self.paciente)
 
@@ -41,20 +53,13 @@ class TestSistemaGestionMedica(unittest.TestCase):
 
     def test_registrar_cita(self):
         self.sistema.registrarPaciente(self.paciente)
-
-        cita = CitaMedica(
-            1, datetime(2026, 12, 10, 9, 0),
-            "Medicina General", "Pendiente",
-            self.paciente, self.medico
-        )
+        cita = self.crear_cita()
 
         self.sistema.agregarCita(cita)
 
         self.assertEqual(len(self.sistema.citas), 1)
         self.assertEqual(cita.estado, "Programada")
-        self.assertEqual(
-            len(self.paciente.consultarCitas()), 1
-        )
+        self.assertEqual(len(self.paciente.consultarCitas()), 1)
 
     def test_generar_reporte_pacientes(self):
         self.sistema.registrarPaciente(self.paciente)
@@ -81,6 +86,50 @@ class TestSistemaGestionMedica(unittest.TestCase):
         self.assertFalse(
             usuario.iniciarSesion("ClaveIncorrecta")
         )
+
+    # NUEVAS PRUEBAS DE VALIDACIÓN
+
+    def test_rechazar_paciente_con_dni_invalido(self):
+        paciente = Paciente(
+            2, "Pedro López", "1234", "987654321"
+        )
+
+        with self.assertRaises(ValueError):
+            self.sistema.registrarPaciente(paciente)
+
+    def test_rechazar_paciente_duplicado(self):
+        self.sistema.registrarPaciente(self.paciente)
+
+        paciente_duplicado = Paciente(
+            1, "Pedro López", "87654321", "999888777"
+        )
+
+        with self.assertRaises(ValueError):
+            self.sistema.registrarPaciente(paciente_duplicado)
+
+    def test_rechazar_cita_sin_especialidad(self):
+        self.sistema.registrarPaciente(self.paciente)
+        cita = self.crear_cita(especialidad="")
+
+        with self.assertRaises(ValueError):
+            self.sistema.agregarCita(cita)
+
+    def test_rechazar_cita_duplicada(self):
+        self.sistema.registrarPaciente(self.paciente)
+
+        cita1 = self.crear_cita(1)
+        cita2 = self.crear_cita(1)
+
+        self.sistema.agregarCita(cita1)
+
+        with self.assertRaises(ValueError):
+            self.sistema.agregarCita(cita2)
+
+    def test_rechazar_estado_invalido(self):
+        cita = self.crear_cita()
+
+        with self.assertRaises(ValueError):
+            cita.cambiarEstado("Estado incorrecto")
 
 
 if __name__ == "__main__":
