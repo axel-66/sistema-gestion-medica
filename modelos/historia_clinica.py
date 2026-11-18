@@ -25,3 +25,11 @@ class HistoriaClinica:
     @property
     def idHistoria(self):
         return self.__idHistoria
+
+    @property
+    def antecedentes(self):
+        return self.__antecedentes
+
+    @property
+    def observaciones(self):
+        return self.__observaciones
