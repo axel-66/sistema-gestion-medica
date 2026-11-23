@@ -1,3 +1,7 @@
+
+from modelos.historia_clinica import HistoriaClinica
+
+
 class Paciente:
 
     def __init__(self, idPaciente, nombre, dni, telefono):
@@ -18,10 +22,14 @@ class Paciente:
         return "Datos del paciente registrados correctamente."
 
     def actualizarDatos(self, nombre=None, telefono=None):
-        if nombre:
+        if nombre is not None:
+            if not nombre.strip():
+                raise ValueError("El nombre no puede estar vacío.")
             self.__nombre = nombre
 
-        if telefono:
+        if telefono is not None:
+            if not telefono.strip():
+                raise ValueError("El teléfono no puede estar vacío.")
             self.__telefono = telefono
 
         return "Datos actualizados correctamente."
@@ -30,9 +38,13 @@ class Paciente:
         return self.__citas.copy()
 
     def agregarCita(self, cita):
+        if cita in self.__citas:
+            raise ValueError("La cita ya está asignada al paciente.")
         self.__citas.append(cita)
 
     def asignarHistoriaClinica(self, historia):
+        if not isinstance(historia, HistoriaClinica):
+            raise TypeError("Debe asignarse una historia clínica válida.")
         self.__historiaClinica = historia
 
     @property

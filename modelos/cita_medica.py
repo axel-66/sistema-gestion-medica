@@ -1,14 +1,27 @@
+
+from datetime import datetime
+from modelos.paciente import Paciente
+from modelos.medico import Medico
+
+
 class CitaMedica:
 
     def __init__(self, idCita, fecha, especialidad, estado,
                  paciente, medico):
 
+        if not isinstance(paciente, Paciente):
+            raise TypeError("Debe asignarse un paciente válido.")
+
+        if not isinstance(medico, Medico):
+            raise TypeError("Debe asignarse un médico válido.")
+
+        if not isinstance(fecha, datetime):
+            raise TypeError("La fecha debe ser un objeto datetime.")
+
         self.__idCita = idCita
         self.__fecha = fecha
         self.__especialidad = especialidad
         self.__estado = estado
-
-        # Relaciones de asociación del diagrama UML
         self.__paciente = paciente
         self.__medico = medico
 
@@ -21,10 +34,18 @@ class CitaMedica:
 
     def cancelar(self):
         self.__estado = "Cancelada"
+        return "Cita cancelada correctamente."
 
     def cambiarEstado(self, nuevoEstado):
-        if not nuevoEstado.strip():
-            raise ValueError("El estado no puede estar vacío.")
+        estados_validos = [
+            "Pendiente",
+            "Programada",
+            "Cancelada",
+            "Atendida"
+        ]
+
+        if nuevoEstado not in estados_validos:
+            raise ValueError("El estado de la cita no es válido.")
 
         self.__estado = nuevoEstado
 
